@@ -9,12 +9,40 @@ allowed-tools: Read, Grep, Glob, Bash, Write
 
 # GEO PDF Report Generator (pandoc pipeline)
 
+## Branding
+
+Reports are branded **BoostixAi**, set in two places:
+
+- Page footer — `content: "BoostixAi · GEO Audit"` in `templates/geo-report-style.css`
+- Cover fallback domain — `boostixai.com` in `templates/geo-report-template.html`
+
+Pass `footer=...` to the fallback builder to add a date, e.g.
+`footer="BoostixAi · GEO Audit · July 2026"`. Do not hardcode a month into the
+CSS — it goes stale silently and ends up on client PDFs.
+
 ## Prerequisites
 
-- **pandoc** — `brew install pandoc`
 - **Google Chrome** — must be installed at `/Applications/Google Chrome.app/`
+- **pandoc** — *optional*. If unavailable, use the fallback builder below.
 
-No Python dependencies. No ReportLab. No JSON data wrangling.
+### If pandoc is unavailable
+
+`scripts/build_report_pdf.py` does the same job without pandoc: it renders the
+markdown, resolves the template's pandoc-style placeholders, and inlines the CSS.
+Requires the `markdown` package in the geo venv:
+
+```bash
+~/.claude/skills/geo/.venv/bin/python3 -m pip install markdown
+
+~/.claude/skills/geo/.venv/bin/python3 \
+  ~/.claude/skills/geo/scripts/build_report_pdf.py \
+  <report>.md GEO-REPORT.html \
+  brand_name="..." domain="..." geo_score="58" score_label="Poor" \
+  date="..." business_type="..." locations="..." platform="..." \
+  footer="BoostixAi · GEO Audit · July 2026"
+```
+
+Then run Chrome headless (Step 4) against the generated HTML.
 
 ## How It Works
 
@@ -41,9 +69,14 @@ Read the top of `GEO-AUDIT-REPORT.md` and extract:
 | Field | Where to find it |
 |---|---|
 | `brand_name` | First H1 title (after "GEO Audit Report:") |
-| `domain` | Second bold line (e.g. `**Domain:** alexamediasolutions.com`) |
+| `domain` | Second bold line (e.g. `**Domain:** example.com`) |
 | `geo_score` | Line matching `## Overall GEO Score: XX / 100` |
 | `score_label` | Word after the score on that same line (e.g. "Poor", "Fair", "Good") |
+
+> ⚠️ **Always pass `geo_score` explicitly.** If omitted, the template falls back to
+> a hardcoded `40` / `Poor` — putting a **fabricated score** on the cover of a client
+> deliverable. For a partial audit that issues no composite, pass a non-numeric
+> value instead, e.g. `geo_score="—" score_label="Partial audit"`.
 | `date` | `**Audit Date:**` line |
 | `business_type` | `**Business Type:**` line |
 | `locations` | `**Locations:**` line |
