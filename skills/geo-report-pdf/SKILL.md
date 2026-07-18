@@ -32,7 +32,9 @@ markdown, resolves the template's pandoc-style placeholders, and inlines the CSS
 Requires the `markdown` package in the geo venv:
 
 ```bash
-~/.claude/skills/geo/.venv/bin/python3 -m pip install markdown
+# NOTE: invoke pip directly. Writing "python3 -m pip" here would be rewritten
+# by install.sh's markdown patcher into a doubled, broken venv path.
+~/.claude/skills/geo/.venv/bin/pip install markdown
 
 ~/.claude/skills/geo/.venv/bin/python3 \
   ~/.claude/skills/geo/scripts/build_report_pdf.py \
@@ -72,15 +74,15 @@ Read the top of `GEO-AUDIT-REPORT.md` and extract:
 | `domain` | Second bold line (e.g. `**Domain:** example.com`) |
 | `geo_score` | Line matching `## Overall GEO Score: XX / 100` |
 | `score_label` | Word after the score on that same line (e.g. "Poor", "Fair", "Good") |
+| `date` | `**Audit Date:**` line |
+| `business_type` | `**Business Type:**` line |
+| `locations` | `**Locations:**` line |
+| `platform` | `**CMS:**` line |
 
 > ⚠️ **Always pass `geo_score` explicitly.** If omitted, the template falls back to
 > a hardcoded `40` / `Poor` — putting a **fabricated score** on the cover of a client
 > deliverable. For a partial audit that issues no composite, pass a non-numeric
 > value instead, e.g. `geo_score="—" score_label="Partial audit"`.
-| `date` | `**Audit Date:**` line |
-| `business_type` | `**Business Type:**` line |
-| `locations` | `**Locations:**` line |
-| `platform` | `**CMS:**` line |
 
 ### Step 3: Run pandoc
 
