@@ -124,7 +124,8 @@ geo-seo-claude/
 │   ├── geo-report-pdf/           # Professional PDF report with charts
 │   ├── geo-prospect/             # CRM-lite prospect pipeline management
 │   ├── geo-proposal/             # Auto-generate client proposals
-│   └── geo-compare/              # Monthly delta tracking & progress reports
+│   ├── geo-compare/              # Monthly delta tracking & progress reports
+│   └── webpage-builder-consultant/ # Website/funnel conversion audit + no-site discovery
 ├── agents/                       # 5 parallel subagents
 │   ├── geo-ai-visibility.md      # GEO audit, citability, crawlers, brands
 │   ├── geo-platform-analysis.md  # Platform-specific optimization
